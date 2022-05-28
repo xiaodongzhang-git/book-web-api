@@ -2,6 +2,7 @@ class Config:
     # http://www.pythondoc.com/flask-sqlalchemy/config.html
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     PROPAGATE_EXCEPTIONS = True
+    DEFAULT_AVATAR = 'https://www.google.com/url?sa=i&url=http%3A%2F%2Fwww.touxiangwu.com%2Ftouxiang%2F84045.html&psig=AOvVaw39cm8wqfWIefoRmddPG1zn&ust=1653824546284000&source=images&cd=vfe&ved=0CAwQjRxqFwoTCLjywZyQgvgCFQAAAAAdAAAAABAD'
     @staticmethod
     def init_app(app):
         pass
