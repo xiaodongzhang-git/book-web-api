@@ -1,3 +1,5 @@
+from flask import current_app
+
 from db import db
 import base64
 class UserModel(db.Model):
@@ -9,7 +11,7 @@ class UserModel(db.Model):
     email = db.Column(db.String(64), unique=True)
     nickname = db.Column(db.String(32))
     birthday = db.Column(db.DateTime())
-    avatar = db.Column(db.String(1028))
+    avatar = db.Column(db.Text())
 
     def __init__(self, username, password, email, nickname, birthday, avatar):
         self.username = username
@@ -17,7 +19,7 @@ class UserModel(db.Model):
         self.email = email
         self.nickname = nickname
         self.birthday = birthday
-        self.avatar = avatar
+        self.avatar = avatar if avatar else current_app.config['DEFAULT_AVATAR']
 
     def save_to_db(self):
         db.session.add(self)
@@ -30,3 +32,7 @@ class UserModel(db.Model):
     @classmethod
     def find_by_email(cls, email):
         return cls.query.filter_by(email=email).first()
+
+    @classmethod
+    def find_by_login(cls, username, password):
+        return cls.query.filter_by(username=username, password=base64.b64encode(password.encode('utf8'))).first()

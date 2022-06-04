@@ -1,8 +1,8 @@
 from flask_restful import Resource, reqparse
 import re
 
-from config import Config
 from models.user import UserModel
+from utils import create_token
 
 class UserRegister(Resource):
     parser = reqparse.RequestParser()
@@ -32,7 +32,7 @@ class UserRegister(Resource):
                         )
     parser.add_argument('avatar',
                         type=str,
-                        default=Config.DEFAULT_AVATAR
+                        default=''
                         )
 
     def post(self):
@@ -73,3 +73,29 @@ class UserRegister(Resource):
             avatar=avatar)
         user.save_to_db()
         return {"message": "User created successfully."}, 201
+
+
+class UserLogin(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('username',
+                        type=str,
+                        required=True,
+                        help="username cannot be blank."
+                        )
+    parser.add_argument('password',
+                        type=str,
+                        required=True,
+                        help="password cannot be blank."
+                        )
+
+    def post(self):
+        data = UserLogin.parser.parse_args()
+        username = data['username']
+        password = data['password']
+        user = UserModel.find_by_login(username, password)
+
+        if not user:
+            return {"message": "user not exits"}, 202
+
+        token = create_token(user.id)
+        return {"data": {'token': token}}, 200
