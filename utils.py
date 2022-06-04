@@ -1,5 +1,8 @@
-from flask import current_app
+from flask import current_app, request
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+import functools
+
+from models.user import UserModel
 
 def create_token(uid):
     '''
@@ -14,3 +17,21 @@ def create_token(uid):
     #接收用户id转换与编码
     token = s.dumps({"id":uid}).decode("ascii")
     return token
+
+def login_required(view_func):
+    @functools.wraps(view_func)
+    def verify_token(*args,**kwargs):
+        try:
+            token = request.headers["z-token"]
+        except Exception:
+            return {"message": "token is not blank"}, 202
+
+        s = Serializer(current_app.config["SECRET_KEY"])
+        try:
+            s.loads(token)
+        except Exception:
+            return {"message": "same email exists"}, 202
+
+        return view_func(*args,**kwargs)
+
+    return verify_token

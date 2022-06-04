@@ -2,7 +2,7 @@ from flask_restful import Resource, reqparse
 import re
 
 from models.user import UserModel
-from utils import create_token
+from utils import create_token, login_required
 
 class UserRegister(Resource):
     parser = reqparse.RequestParser()
@@ -99,3 +99,23 @@ class UserLogin(Resource):
 
         token = create_token(user.id)
         return {"data": {'token': token}}, 200
+
+
+class UserInfo(Resource):
+
+    @login_required
+    def get(self, id):
+        user = UserModel.find_by_id(id)
+        if not user:
+            return {"message": "user not exits"}, 202
+
+        data = {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'nickname': user.nickname,
+            'birthday': str(user.birthday),
+            'avatar': user.avatar,
+        }
+
+        return {"data": data}, 200
