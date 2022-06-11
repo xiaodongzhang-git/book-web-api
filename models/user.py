@@ -40,3 +40,12 @@ class UserModel(db.Model):
     @classmethod
     def find_by_login(cls, username, password):
         return cls.query.filter_by(username=username, password=base64.b64encode(password.encode('utf8'))).first()
+    
+    @classmethod
+    def update_user_info(cls, uid, email, nickname, birthday, avatar):
+        user = cls.query.filter_by(id=uid).first()
+        user.email = email
+        user.nickname = nickname
+        user.birthday = birthday
+        user.avatar = avatar
+        db.session.commit()

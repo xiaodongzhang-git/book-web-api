@@ -30,8 +30,14 @@ def login_required(view_func):
         try:
             s.loads(token)
         except Exception:
-            return {"message": "same email exists"}, 202
+            return {"message": "token verification failed"}, 202
 
         return view_func(*args,**kwargs)
 
     return verify_token
+
+def get_id_by_token():
+    token = request.headers["z-token"]
+    s = Serializer(current_app.config["SECRET_KEY"])
+    obj = s.loads(token)
+    return obj['id']

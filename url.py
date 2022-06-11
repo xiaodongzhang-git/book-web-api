@@ -1,6 +1,4 @@
-from views.user import UserRegister
-from views.user import UserLogin
-from views.user import UserInfo
+from views.user import UserRegister,UserLogin, UserInfo, UserUpdateInfo
 
 class urlManage():
 
@@ -12,3 +10,4 @@ class urlManage():
         api.add_resource(UserRegister, '/user/register')
         api.add_resource(UserLogin, '/user/login')
         api.add_resource(UserInfo, '/user/info/<int:id>')
+        api.add_resource(UserUpdateInfo, '/user/update/info')
