@@ -22,12 +22,11 @@ class TestInit(Resource):
         user.save_to_db()
 
         categorys = ['玄幻', '武侠', '青春', '穿越']
-        CategoryModel.delete_all()
         for idx,c in enumerate(categorys):
             c_model = CategoryModel(c)
             c_model.save_to_db()
 
-            for i in range(0, 10):
+            for i in range(0, 50):
                 n_model = NovelModel(
                     name=c+str(i),
                     intro=c+'intro'+str(i),

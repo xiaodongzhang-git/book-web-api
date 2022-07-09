@@ -14,6 +14,5 @@ class CategoryModel(BaseModel):
         db.session.commit()
 
     @classmethod
-    def delete_all(cls):
-        cls.query.filter().delete()
-        db.session.commit()
+    def get_category_list(cls):
+        return cls.query.filter_by(is_delete=1).all()

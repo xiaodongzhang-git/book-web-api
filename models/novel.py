@@ -29,6 +29,5 @@ class NovelModel(BaseModel):
         db.session.commit()
 
     @classmethod
-    def delete_all(cls):
-        cls.query.filter().delete()
-        db.session.commit()
+    def get_novel_list(cls, category_id):
+        return cls.query.filter_by(category_id=category_id, is_delete=1).order_by(cls.update_time.desc()).limit(20).all()
