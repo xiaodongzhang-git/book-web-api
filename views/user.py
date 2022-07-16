@@ -5,40 +5,41 @@ from models.user import UserModel
 from utils import create_token, login_required, get_id_by_token
 
 class UserRegister(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('username',
-                        type=str,
-                        required=True,
-                        help="This field cannot be blank."
-                        )
-    parser.add_argument('password',
-                        type=str,
-                        required=True,
-                        help="This field cannot be blank."
-                        )
-    parser.add_argument('email',
-                        type=str,
-                        required=True,
-                        help="This field cannot be blank."
-                        )
-    parser.add_argument('nickname',
-                        type=str,
-                        required=True,
-                        help="This field cannot be blank."
-                        )
-    parser.add_argument('birthday',
-                        type=str,
-                        default=''
-                        )
-    parser.add_argument('avatar',
-                        type=str,
-                        default=''
-                        )
 
     def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('username',
+                            type=str,
+                            required=True,
+                            help="This field cannot be blank."
+                            )
+        parser.add_argument('password',
+                            type=str,
+                            required=True,
+                            help="This field cannot be blank."
+                            )
+        parser.add_argument('email',
+                            type=str,
+                            required=True,
+                            help="This field cannot be blank."
+                            )
+        parser.add_argument('nickname',
+                            type=str,
+                            required=True,
+                            help="This field cannot be blank."
+                            )
+        parser.add_argument('birthday',
+                            type=str,
+                            default=''
+                            )
+        parser.add_argument('avatar',
+                            type=str,
+                            default=''
+                            )
+
         email_rex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
 
-        data = UserRegister.parser.parse_args()
+        data = parser.parse_args()
         username = data['username']
         password = data['password']
         email=data['email']
@@ -120,39 +121,41 @@ class UserInfo(Resource):
 
         return {"data": data}, 200
 
-
-class UserUpdateInfo(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('email',
-                        type=str,
-                        required=True,
-                        help="This field cannot be blank."
-                        )
-    parser.add_argument('nickname',
-                        type=str,
-                        required=True,
-                        help="This field cannot be blank."
-                        )
-    parser.add_argument('birthday',
-                        type=str,
-                        required=True,
-                        default=''
-                        )
-    parser.add_argument('avatar',
-                        type=str,
-                        required=True,
-                        default=''
-                        )
     @login_required
-    def put(self):
+    def put(self, id):
+        parser = reqparse.RequestParser()
+        parser.add_argument('email',
+                            type=str,
+                            required=True,
+                            help="This field cannot be blank."
+                            )
+        parser.add_argument('nickname',
+                            type=str,
+                            required=True,
+                            help="This field cannot be blank."
+                            )
+        parser.add_argument('birthday',
+                            type=str,
+                            required=True,
+                            default=''
+                            )
+        parser.add_argument('avatar',
+                            type=str,
+                            required=True,
+                            default=''
+                            )
+
         email_rex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
         
-        data = UserUpdateInfo.parser.parse_args()
+        data = parser.parse_args()
         email = data['email']
         nickname = data['nickname']
         birthday = data['birthday']
         avatar = data['avatar']
         uid = get_id_by_token()
+        
+        if id != uid:
+            return {"message": "erro request"}, 202
         
         if len(nickname)<2 or len(nickname)>32:
             return {"message": "nickname must be between 6 and 32 digits"}, 202

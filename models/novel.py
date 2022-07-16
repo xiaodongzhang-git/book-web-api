@@ -29,5 +29,12 @@ class NovelModel(BaseModel):
         db.session.commit()
 
     @classmethod
-    def get_novel_list(cls, category_id):
-        return cls.query.filter_by(category_id=category_id, is_delete=1).order_by(cls.update_time.desc()).limit(20).all()
+    def get_novel_list_by_cid(cls, category_id, limit, offset):
+        return cls.query.filter_by(category_id=category_id, is_delete=1).order_by(cls.update_time.desc()).limit(limit).offset(offset).all()
+
+    @classmethod
+    def get_novel_list_order_by_action(cls, limit, offset, action):
+        if action == 1:
+            return cls.query.filter_by(is_delete=1).order_by(cls.good.desc()).limit(limit).offset(offset).all()
+        else:
+            return cls.query.filter_by(is_delete=1).order_by(cls.read.desc()).limit(limit).offset(offset).all()

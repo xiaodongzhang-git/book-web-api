@@ -1,12 +1,46 @@
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 from models.novel import NovelModel
 import constant
 
 class NovelList(Resource):
 
-    def get(self, id):
+    def get(self):
 
-        novel_list = NovelModel.get_novel_list(id)
+        parser = reqparse.RequestParser()
+        parser.add_argument('cid',
+                            type=int,
+                            default=0,
+                            location='args'
+                            )
+        parser.add_argument('action',
+                            type=int,
+                            default=0, # 1代表点赞排行 2代表阅读排行
+                            location='args'
+                            )
+        parser.add_argument('limit',
+                            type=int,
+                            default=10,
+                            location='args'
+                            )
+        parser.add_argument('offset',
+                            type=int,
+                            default=0,
+                            location='args'
+                            )
+
+        data = parser.parse_args()
+        cid = data['cid']
+        action = data['action']
+        offset = data['offset']
+        limit = data['limit']
+
+        novel_list = []
+        if cid > 0:
+            novel_list = NovelModel.get_novel_list_by_cid(cid, limit, offset)
+        elif action in [1, 2]:
+            novel_list = NovelModel.get_novel_list_order_by_action(limit, offset, action)
+        else:
+            return {"message": "error request"}, 202
 
         res = []
 
