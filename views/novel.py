@@ -54,4 +54,6 @@ class NovelList(Resource):
             temp['read'] = novel.read
             temp['nickname'] = novel.user.nickname
             res.append(temp)
-        return {"data": {'result': res}}, 200
+
+        count = NovelModel.get_novel_list_count(cid)
+        return {"data": {'result': res, 'count': count}}, 200

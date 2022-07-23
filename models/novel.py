@@ -38,3 +38,7 @@ class NovelModel(BaseModel):
             return cls.query.filter_by(is_delete=1).order_by(cls.good.desc()).limit(limit).offset(offset).all()
         else:
             return cls.query.filter_by(is_delete=1).order_by(cls.read.desc()).limit(limit).offset(offset).all()
+
+    @classmethod
+    def get_novel_list_count(cls, cid):
+        return cls.query.filter_by(category_id=cid,is_delete=1).count()
